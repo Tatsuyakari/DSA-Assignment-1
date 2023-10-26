@@ -55,6 +55,27 @@ private:
 			queue_head = queue_head->next;
 		}
 	}
+	void deQueue()
+	{
+		if (queue_head == nullptr)
+			return;
+		if (queue_size == 1)
+		{
+			customer *temp = queue_head;
+			queue_head = nullptr;
+			queue_size = 0;
+			delete temp;
+		}
+		else
+		{
+			customer *temp = queue_head;
+			queue_head->prev->next = queue_head->next;
+			queue_head->next->prev = queue_head->prev;
+			queue_head = queue_head->next;
+			delete temp;
+		}
+		queue_size--;
+	}
 
 	void enSequence(string name, int energy)
 	{
@@ -103,6 +124,14 @@ private:
 	}
 	void remove(string name, int energy)
 	{
+		if (size == 1)
+		{
+			customer *temp = X;
+			X = nullptr;
+			size = 0;
+			delete temp;
+			return;
+		}
 		if (energy > 0)
 		{
 			// // cout << "Clear Right" << endl;
@@ -285,12 +314,7 @@ public:
 		while (queue_size > 0 && size < MAXSIZE)
 		{
 			RED(queue_head->name, queue_head->energy);
-			customer *temp = queue_head;
-			queue_head->prev->next = queue_head->next;
-			queue_head->next->prev = queue_head->prev;
-			queue_head = queue_head->next;
-			delete temp;
-			queue_size--;
+			deQueue();
 		}
 	}
 	void PURPLE()
@@ -311,7 +335,7 @@ public:
 	}
 	void LIGHT(int num)
 	{
-		cout <<"-----------------" << endl;
+		cout << "-----------------" << endl;
 		// // cout << size << endl;
 		if (num == 0)
 		{
@@ -339,6 +363,6 @@ public:
 				X = X->prev;
 			}
 		}
-		cout <<"-----------------" << endl;
+		cout << "-----------------" << endl;
 	}
 };
