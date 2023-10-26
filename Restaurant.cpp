@@ -1,4 +1,5 @@
 #include "main.h"
+// Modified version of Insertion Sort for varying increments
 
 class imp_res : public Restaurant
 {
@@ -434,33 +435,67 @@ public:
 			temp = temp->next;
 		}
 		// cout << "sum: " << sum << endl;
-		temp = sequence_head;
+
 		if (sum > 0)
 		{
+			temp = sequence_head;
 			for (int i = 0; i < sequence_size; i++)
 			{
 				if (temp->energy < 0)
 				{
 					cout << temp->name << "-" << temp->energy << endl;
-					// removeinSequence(temp->name, temp->energy);
-					remove(temp->name, temp->energy);
-					removeinQueue(temp->name, temp->energy);
 					removeinSequence(temp->name, temp->energy);
+					i--;
+				}
+				temp = temp->next;
+			}
+			temp = X;
+			for (int i = 0; i < size; i++)
+			{
+				if (temp->energy < 0)
+				{
+					remove(temp->name, temp->energy);
+				}
+				temp = temp->next;
+			}
+			temp = queue_head;
+			for (int i = 0; i < queue_size; i++)
+			{
+				if (temp->energy < 0)
+				{
+					removeinQueue(temp->name, temp->energy);
 				}
 				temp = temp->next;
 			}
 		}
 		else if (sum < 0)
 		{
+			temp = sequence_head;
 			for (int i = 0; i < sequence_size; i++)
 			{
 				if (temp->energy > 0)
 				{
 					cout << temp->name << "-" << temp->energy << endl;
-					// removeinSequence(temp->name, temp->energy);
-					remove(temp->name, temp->energy);
-					removeinQueue(temp->name, temp->energy);
 					removeinSequence(temp->name, temp->energy);
+					i--;
+				}
+				temp = temp->next;
+			}
+			temp = X;
+			for (int i = 0; i < size; i++)
+			{
+				if (temp->energy > 0)
+				{
+					remove(temp->name, temp->energy);
+				}
+				temp = temp->next;
+			}
+			temp = queue_head;
+			for (int i = 0; i < queue_size; i++)
+			{
+				if (temp->energy > 0)
+				{
+					removeinQueue(temp->name, temp->energy);
 				}
 				temp = temp->next;
 			}
@@ -478,7 +513,7 @@ public:
 	void LIGHT(int num)
 	{
 		// cout << "-----------------" << endl;
-		// // cout << size << endl;
+		// cout << size << endl;
 		if (num == 0)
 		{
 			for (int i = 0; i < queue_size; i++)
