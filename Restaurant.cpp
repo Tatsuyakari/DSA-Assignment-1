@@ -5,7 +5,7 @@ class imp_res : public Restaurant
 private:
 	customer *head;
 	customer *X; // node X is the current node(customer)
-	int size;
+	int size = 0;
 	bool checkName(string name)
 	{
 		customer *temp = X;
@@ -32,8 +32,6 @@ public:
 			head->next = head;
 			head->prev = head;
 			X = head;
-			size++;
-			return;
 		}
 		else if (size < MAXSIZE / 2) // Case size < MAXSIZE / 2
 		{
@@ -99,6 +97,7 @@ public:
 				X = cus;
 			}
 		}
+		size++;
 		cout << MAXSIZE << endl;
 	}
 	void BLUE(int num)
@@ -123,6 +122,24 @@ public:
 	}
 	void LIGHT(int num)
 	{
-		cout << "light " << num << endl;
+		cout << size << endl;
+		if (num == 0)
+			return;
+		if (num > 0)
+		{
+			for (int i = 0; i < size; i++)
+			{
+				X->print();
+				X = X->next;
+			}
+		}
+		else
+		{
+			for (int i = 0; i < size; i++)
+			{
+				X->print();
+				X = X->prev;
+			}
+		}
 	}
 };
