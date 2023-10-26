@@ -21,6 +21,17 @@ private:
 		}
 		return false;
 	}
+	bool checkNameInSequence(string name)
+	{
+		customer *temp = sequence_head;
+		for (int i = 0; i < sequence_size; i++)
+		{
+			if (temp->name == name)
+				return true;
+			temp = temp->next;
+		}
+		return false;
+	}
 	void enQueue(customer *cus)
 	{
 		if (queue_head == nullptr)
@@ -37,31 +48,14 @@ private:
 			queue_head->prev = cus;
 		}
 		queue_size++;
-		cout << "queue_size: " << queue_size << endl;
+		// // cout << "queue_size: " << queue_size << endl;
 		for (int i = 0; i < queue_size; i++)
 		{
-			queue_head->print();
+			// queue_head->print();
 			queue_head = queue_head->next;
 		}
 	}
-	void deQueue()
-	{
-		if (queue_head == nullptr)
-			return;
-		if (queue_size == 1)
-		{
-			queue_head = nullptr;
-		}
-		else
-		{
-			customer *temp = queue_head;
-			queue_head->prev->next = queue_head->next;
-			queue_head->next->prev = queue_head->prev;
-			queue_head = queue_head->next;
-			delete temp;
-		}
-		queue_size--;
-	}
+
 	void enSequence(string name, int energy)
 	{
 		customer *cus = new customer(name, energy, nullptr, nullptr);
@@ -79,10 +73,10 @@ private:
 			sequence_head->prev = cus;
 		}
 		sequence_size++;
-		cout << "sequence_size: " << sequence_size << endl;
+		// // cout << "sequence_size: " << sequence_size << endl;
 		for (int i = 0; i < sequence_size; i++)
 		{
-			sequence_head->print();
+			// sequence_head->print();
 			sequence_head = sequence_head->next;
 		}
 	}
@@ -92,7 +86,10 @@ private:
 			return;
 		if (sequence_size == 1)
 		{
+			customer *temp = sequence_head;
 			sequence_head = nullptr;
+			sequence_size = 0;
+			delete temp;
 		}
 		else
 		{
@@ -108,7 +105,7 @@ private:
 	{
 		if (energy > 0)
 		{
-			cout << "Clear Right" << endl;
+			// // cout << "Clear Right" << endl;
 			for (int i = 0; i < size; i++)
 			{
 				if (X->name == name)
@@ -126,7 +123,7 @@ private:
 		}
 		else
 		{
-			cout << "Clear Left" << endl;
+			// // cout << "Clear Left" << endl;
 			for (int i = 0; i < size; i++)
 			{
 				if (X->name == name)
@@ -174,16 +171,23 @@ public:
 
 	void RED(string name, int energy)
 	{
+		// // cout << "-----------------" << endl;
+		// // cout << "RED" << name << " " << energy << endl;
 		if (energy == 0 || (size == MAXSIZE && queue_size == MAXSIZE) || checkName(name))
 			return;
-		cout << name << " " << energy << endl;
+		// // cout << name << " " << energy << endl;
 		customer *cus = new customer(name, energy, nullptr, nullptr);
-		enSequence(cus->name, cus->energy);
+		// if name is not in the restaurant but in sequence,don't add it
+		if (!checkNameInSequence(name))
+		{
+			enSequence(name, energy);
+		}
 		if (size == MAXSIZE && queue_size < MAXSIZE)
 		{
 			enQueue(cus);
 			return;
 		}
+
 		if (X == nullptr)
 		{
 			X = cus;
@@ -256,11 +260,11 @@ public:
 		}
 
 		size++;
-		cout << MAXSIZE << endl;
+		// // cout << MAXSIZE << endl;
+		// // cout << "-----------------" << endl;
 	}
 	void BLUE(int num)
 	{
-		cout << "BLUE" << endl;
 		if (num == 0 || size == 0)
 			return;
 		for (int i = 0; i < num; i++)
@@ -269,7 +273,7 @@ public:
 			{
 				if (X->name == sequence_head->name)
 				{
-					cout << "remove: " << X->name << " " << X->energy << endl;
+					// // cout << "remove: " << X->name << " " << X->energy << endl;
 					remove(X->name, X->energy);
 					deSequence();
 					break;
@@ -277,35 +281,49 @@ public:
 				X = X->next;
 			}
 		}
-		cout << "-----------------" << endl;
-		cout << "size: " << size << endl;
-		cout << "sequence_size: " << sequence_size << endl;
-		cout << "queue_size: " << queue_size << endl;
-		cout << "-----------------" << endl;
+
+		while (queue_size > 0 && size < MAXSIZE)
+		{
+			RED(queue_head->name, queue_head->energy);
+			customer *temp = queue_head;
+			queue_head->prev->next = queue_head->next;
+			queue_head->next->prev = queue_head->prev;
+			queue_head = queue_head->next;
+			delete temp;
+			queue_size--;
+		}
 	}
 	void PURPLE()
 	{
-		cout << "purple" << endl;
+		// // cout << "purple" << endl;
 	}
 	void REVERSAL()
 	{
-		cout << "reversal" << endl;
+		// // cout << "reversal" << endl;
 	}
 	void UNLIMITED_VOID()
 	{
-		cout << "unlimited_void" << endl;
+		// // cout << "unlimited_void" << endl;
 	}
 	void DOMAIN_EXPANSION()
 	{
-		cout << "domain_expansion" << endl;
+		// // cout << "domain_expansion" << endl;
 	}
 	void LIGHT(int num)
 	{
-		cout << size << endl;
+		cout <<"-----------------" << endl;
+		// // cout << size << endl;
 		if (num == 0)
-			return;
+		{
+			for (int i = 0; i < queue_size; i++)
+			{
+				queue_head->print();
+				queue_head = queue_head->next;
+			}
+		}
 		if (num > 0)
 		{
+
 			for (int i = 0; i < size; i++)
 			{
 				X->print();
@@ -314,25 +332,13 @@ public:
 		}
 		else
 		{
+
 			for (int i = 0; i < size; i++)
 			{
 				X->print();
 				X = X->prev;
 			}
 		}
-		// Print sequence
-		cout << "sequence_size: " << sequence_size << endl;
-		for (int i = 0; i < sequence_size; i++)
-		{
-			sequence_head->print();
-			sequence_head = sequence_head->next;
-		}
-		// Print queue
-		cout << "queue_size: " << queue_size << endl;
-		for (int i = 0; i < queue_size; i++)
-		{
-			queue_head->print();
-			queue_head = queue_head->next;
-		}
+		cout <<"-----------------" << endl;
 	}
 };
