@@ -169,6 +169,100 @@ private:
 			}
 		}
 	}
+	void removeinSequence(string name, int energy)
+	{
+		if (sequence_size == 1)
+		{
+			customer *temp = sequence_head;
+			sequence_head = nullptr;
+			sequence_size = 0;
+			delete temp;
+			return;
+		}
+		if (energy > 0)
+		{
+			// // cout << "Clear Right" << endl;
+			for (int i = 0; i < sequence_size; i++)
+			{
+				if (sequence_head->name == name)
+				{
+					customer *temp = sequence_head;
+					sequence_head = sequence_head->next;
+					sequence_head->prev = temp->prev;
+					sequence_head->prev->next = sequence_head;
+					delete temp;
+					sequence_size--;
+					break;
+				}
+				sequence_head = sequence_head->next;
+			}
+		}
+		else
+		{
+			// // cout << "Clear Left" << endl;
+			for (int i = 0; i < sequence_size; i++)
+			{
+				if (sequence_head->name == name)
+				{
+					customer *temp = sequence_head;
+					sequence_head = sequence_head->prev;
+					sequence_head->next = temp->next;
+					sequence_head->next->prev = sequence_head;
+					delete temp;
+					sequence_size--;
+					break;
+				}
+				sequence_head = sequence_head->next;
+			}
+		}
+	}
+	void removeinQueue(string name, int energy)
+	{
+		if (queue_size == 1)
+		{
+			customer *temp = queue_head;
+			queue_head = nullptr;
+			queue_size = 0;
+			delete temp;
+			return;
+		}
+		if (energy > 0)
+		{
+			// // cout << "Clear Right" << endl;
+			for (int i = 0; i < queue_size; i++)
+			{
+				if (queue_head->name == name)
+				{
+					customer *temp = queue_head;
+					queue_head = queue_head->next;
+					queue_head->prev = temp->prev;
+					queue_head->prev->next = queue_head;
+					delete temp;
+					queue_size--;
+					break;
+				}
+				queue_head = queue_head->next;
+			}
+		}
+		else
+		{
+			// // cout << "Clear Left" << endl;
+			for (int i = 0; i < queue_size; i++)
+			{
+				if (queue_head->name == name)
+				{
+					customer *temp = queue_head;
+					queue_head = queue_head->prev;
+					queue_head->next = temp->next;
+					queue_head->next->prev = queue_head;
+					delete temp;
+					queue_size--;
+					break;
+				}
+				queue_head = queue_head->next;
+			}
+		}
+	}
 
 public:
 	imp_res(){};
@@ -331,11 +425,59 @@ public:
 	}
 	void DOMAIN_EXPANSION()
 	{
-		// // cout << "domain_expansion" << endl;
+		// cout << "domain_expansion" << endl;
+		int sum = 0;
+		customer *temp = sequence_head;
+		for (int i = 0; i < sequence_size; i++)
+		{
+			sum += temp->energy;
+			temp = temp->next;
+		}
+		// cout << "sum: " << sum << endl;
+		temp = sequence_head;
+		if (sum > 0)
+		{
+			for (int i = 0; i < sequence_size; i++)
+			{
+				if (temp->energy < 0)
+				{
+					cout << temp->name << "-" << temp->energy << endl;
+					// removeinSequence(temp->name, temp->energy);
+					remove(temp->name, temp->energy);
+					removeinQueue(temp->name, temp->energy);
+					removeinSequence(temp->name, temp->energy);
+				}
+				temp = temp->next;
+			}
+		}
+		else if (sum < 0)
+		{
+			for (int i = 0; i < sequence_size; i++)
+			{
+				if (temp->energy > 0)
+				{
+					cout << temp->name << "-" << temp->energy << endl;
+					// removeinSequence(temp->name, temp->energy);
+					remove(temp->name, temp->energy);
+					removeinQueue(temp->name, temp->energy);
+					removeinSequence(temp->name, temp->energy);
+				}
+				temp = temp->next;
+			}
+		}
+		else if (sum == 0)
+		{
+			// Print Queue
+			for (int i = 0; i < queue_size; i++)
+			{
+				queue_head->print();
+				queue_head = queue_head->next;
+			}
+		}
 	}
 	void LIGHT(int num)
 	{
-		cout << "-----------------" << endl;
+		// cout << "-----------------" << endl;
 		// // cout << size << endl;
 		if (num == 0)
 		{
@@ -363,6 +505,6 @@ public:
 				X = X->prev;
 			}
 		}
-		cout << "-----------------" << endl;
+		// cout << "-----------------" << endl;
 	}
 };
