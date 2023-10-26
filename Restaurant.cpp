@@ -20,6 +20,17 @@ private:
 
 public:
 	imp_res(){};
+	// destructor
+	~imp_res()
+	{
+		customer *temp = head;
+		for (int i = 0; i < size; i++)
+		{
+			customer *next = temp->next;
+			delete temp;
+			temp = next;
+		}
+	}
 	void RED(string name, int energy)
 	{
 		if (energy == 0 || size == MAXSIZE || checkName(name))
